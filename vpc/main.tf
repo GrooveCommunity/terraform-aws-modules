@@ -1,7 +1,8 @@
 locals {
 
-  public_subnets = { for public_subnet in var.public_subnets : "${var.name}-${public_subnet.zone}-${public_subnet.name}" => public_subnet }
-  intra_subnets  = { for intra_subnet in var.intra_subnets : "${var.name}-${intra_subnet.zone}-${intra_subnet.name}" => intra_subnet }
+  public_subnets  = { for public_subnet in var.public_subnets : "${var.name}-${public_subnet.zone}-${public_subnet.name}" => public_subnet }
+  private_subnets = { for private_subnet in var.private_subnets : "${var.name}-${private_subnet.zone}-${private_subnet.name}" => private_subnet }
+  intra_subnets   = { for intra_subnet in var.intra_subnets : "${var.name}-${intra_subnet.zone}-${intra_subnet.name}" => intra_subnet }
 
   nat_gateway_zones = {
     for nat_gateway in var.nat_gateways : nat_gateway.zone => merge({
@@ -64,7 +65,7 @@ resource "aws_default_network_acl" "this" {
 # Public subnet
 ################
 resource "aws_subnet" "public" {
-  for_each = var.public_subnets
+  for_each = local.public_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -126,7 +127,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each = var.public_subnets
+  for_each = local.public_subnets
 
   subnet_id      = aws_subnet.public[each.key].id
   route_table_id = aws_route_table.public[0].id
@@ -213,14 +214,14 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     {
-      "Name" = "${var.name}-private"
+      "Name" = "${var.name}"
     },
     var.tags,
   )
 }
 
 resource "aws_route_table_association" "private" {
-  for_each = var.private_subnets
+  for_each = local.private_subnets
 
   subnet_id      = aws_subnet.private[each.key].id
   route_table_id = aws_route_table.private[each.value["zone"]].id
@@ -325,7 +326,7 @@ resource "aws_network_acl_rule" "private_outbound" {
 # intra subnets - private subnet without NAT gateway
 #####################################################
 resource "aws_subnet" "intra" {
-  for_each = var.intra_subnets
+  for_each = local.intra_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -359,7 +360,7 @@ resource "aws_route_table" "intra" {
 }
 
 resource "aws_route_table_association" "intra" {
-  for_each = var.intra_subnets
+  for_each = local.intra_subnets
 
   subnet_id      = aws_subnet.intra[each.key].id
   route_table_id = aws_route_table.intra[0].id
