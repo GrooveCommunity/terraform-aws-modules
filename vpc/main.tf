@@ -64,7 +64,7 @@ resource "aws_default_network_acl" "this" {
 # Public subnet
 ################
 resource "aws_subnet" "public" {
-  for_each = local.public_subnets
+  for_each = var.public_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -126,7 +126,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each = local.public_subnets
+  for_each = var.public_subnets
 
   subnet_id      = aws_subnet.public[each.key].id
   route_table_id = aws_route_table.public[0].id
@@ -220,7 +220,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route_table_association" "private" {
-  for_each = local.private_subnets
+  for_each = var.private_subnets
 
   subnet_id      = aws_subnet.private[each.key].id
   route_table_id = aws_route_table.private[each.value["zone"]].id
@@ -325,7 +325,7 @@ resource "aws_network_acl_rule" "private_outbound" {
 # intra subnets - private subnet without NAT gateway
 #####################################################
 resource "aws_subnet" "intra" {
-  for_each = local.intra_subnets
+  for_each = var.intra_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -359,7 +359,7 @@ resource "aws_route_table" "intra" {
 }
 
 resource "aws_route_table_association" "intra" {
-  for_each = local.intra_subnets
+  for_each = var.intra_subnets
 
   subnet_id      = aws_subnet.intra[each.key].id
   route_table_id = aws_route_table.intra[0].id
