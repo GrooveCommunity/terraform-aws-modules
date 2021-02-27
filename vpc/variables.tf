@@ -73,7 +73,7 @@ variable "private_subnets" {
   ]
 }
 
-variable "nat_gateway" {
+variable "nat_gateways" {
   description = "Availability zones to deploy AWS NAT Gateway for private subnets"
   type        = list(any)
   default = [
