@@ -185,7 +185,7 @@ resource "aws_network_acl_rule" "public_outbound" {
 # private subnets - private subnet with NAT gateway
 #####################################################
 resource "aws_subnet" "private" {
-  for_each = local.private_subnets
+  for_each = var.private_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -209,11 +209,11 @@ resource "aws_subnet" "private" {
 resource "aws_route_table" "private" {
   for_each = local.nat_gateway_zones
 
-  vpc_id = local.vpc_id
+  vpc_id = aws_vpc.this.id
 
   tags = merge(
     {
-      "Name" = "routes-${var.name}-${var.each.value}"
+      "Name" = "${var.name}-private"
     },
     var.tags,
   )
