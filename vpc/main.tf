@@ -258,7 +258,7 @@ resource "aws_route" "private_nat_gateway" {
 ##############
 
 resource "aws_eip" "nat" {
-  for_each = { for key, zone in local.nat_gateway_zones : key => zone... if lookup(zone, "eip_id", null) != null }
+  for_each = { for zone, nat_gateway in local.nat_gateway_zones : zone => nat_gateway... if lookup(nat_gateway, "eip_id", null) == null }
 
   vpc = true
 
@@ -283,7 +283,10 @@ resource "aws_nat_gateway" "this" {
     var.tags,
   )
 
-  depends_on = [aws_internet_gateway.this]
+  depends_on = [
+    aws_internet_gateway.this,
+    aws_eip.nat,
+  ]
 }
 
 ########################
