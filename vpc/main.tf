@@ -82,6 +82,10 @@ resource "aws_subnet" "public" {
   )
 }
 
+locals {
+  public_subnet_ids = [for subnet in aws_subnet.public : subnet.id]
+}
+
 ###################
 # Internet Gateway
 ###################
@@ -138,7 +142,7 @@ resource "aws_route_table_association" "public" {
 ########################
 resource "aws_network_acl" "public" {
   vpc_id     = aws_vpc.this.id
-  subnet_ids = aws_subnet.public.*.id
+  subnet_ids = local.public_subnet_ids
 
   tags = merge(
     {
@@ -186,7 +190,7 @@ resource "aws_network_acl_rule" "public_outbound" {
 # private subnets - private subnet with NAT gateway
 #####################################################
 resource "aws_subnet" "private" {
-  for_each = var.private_subnets
+  for_each = local.private_subnets
 
   vpc_id                          = aws_vpc.this.id
   cidr_block                      = each.value["cidr"]
@@ -203,6 +207,10 @@ resource "aws_subnet" "private" {
   )
 }
 
+locals {
+  private_subnet_ids = [for subnet in aws_subnet.private : subnet.id]
+}
+
 #################
 # Private routes
 # There are as many routing tables as the number of NAT gateways
@@ -214,7 +222,7 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     {
-      "Name" = "${var.name}"
+      "Name" = "${var.name}-private"
     },
     var.tags,
   )
@@ -278,7 +286,7 @@ resource "aws_nat_gateway" "this" {
 ########################
 resource "aws_network_acl" "private" {
   vpc_id     = aws_vpc.this.id
-  subnet_ids = aws_subnet.private.*.id
+  subnet_ids = local.private_subnet_ids
 
   tags = merge(
     {
@@ -343,6 +351,10 @@ resource "aws_subnet" "intra" {
   )
 }
 
+locals {
+  intra_subnet_ids = [for subnet in aws_subnet.intra : subnet.id]
+}
+
 ##########################
 # Intra subnet Route Table
 ##########################
@@ -371,7 +383,7 @@ resource "aws_route_table_association" "intra" {
 ########################
 resource "aws_network_acl" "intra" {
   vpc_id     = aws_vpc.this.id
-  subnet_ids = aws_subnet.intra.*.id
+  subnet_ids = local.intra_subnet_ids
 
   tags = merge(
     {
