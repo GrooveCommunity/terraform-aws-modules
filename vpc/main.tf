@@ -4,11 +4,6 @@ locals {
   private_subnets = { for private_subnet in var.private_subnets : "${var.name}-${private_subnet.zone}-${private_subnet.name}" => private_subnet }
   intra_subnets   = { for intra_subnet in var.intra_subnets : "${var.name}-${intra_subnet.zone}-${intra_subnet.name}" => intra_subnet }
 
-  nat_gateway_zones = {
-    for nat_gateway in var.nat_gateways : nat_gateway.zone => merge({
-      subnet_key = "${var.name}-${nat_gateway.zone}-${nat_gateway.subnet}"
-    }, nat_gateway)
-  }
 }
 
 ######
@@ -41,14 +36,14 @@ resource "aws_default_network_acl" "this" {
 
   subnet_ids = setsubtract(
     compact(flatten([
-      aws_subnet.public.*.id,
-      aws_subnet.private.*.id,
-      aws_subnet.intra.*.id,
+      local.public_subnet_ids,
+      local.private_subnet_ids,
+      local.intra_subnet_ids,
     ])),
     compact(flatten([
-      aws_network_acl.public.*.subnet_ids,
-      aws_network_acl.private.*.subnet_ids,
-      aws_network_acl.intra.*.subnet_ids,
+      aws_network_acl.public.subnet_ids,
+      aws_network_acl.private.subnet_ids,
+      aws_network_acl.intra.subnet_ids,
     ]))
   )
 
@@ -215,6 +210,16 @@ locals {
 # Private routes
 # There are as many routing tables as the number of NAT gateways
 #################
+
+locals {
+
+  nat_gateway_zones = {
+    for nat_gateway in var.nat_gateways : nat_gateway.zone => merge({
+      subnet_key = "${var.name}-${nat_gateway.zone}-${nat_gateway.subnet}"
+    }, nat_gateway)
+  }
+}
+
 resource "aws_route_table" "private" {
   for_each = local.nat_gateway_zones
 
