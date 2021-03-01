@@ -17,7 +17,7 @@ variable "instance_tenancy" {
 
 variable "tags" {
   description = "Additional tags for the VPC"
-  type        = map(any)
+  type        = any
   default     = {}
 }
 

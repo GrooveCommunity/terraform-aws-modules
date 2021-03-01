@@ -13,7 +13,7 @@ resource "aws_vpc" "this" {
   cidr_block       = var.cidr
   instance_tenancy = var.instance_tenancy
 
-  enable_dns_hostnames             = false
+  enable_dns_hostnames             = true
   enable_dns_support               = true
   enable_classiclink               = false
   enable_classiclink_dns_support   = false
