@@ -5,7 +5,7 @@ variable "region" {
 
 variable "name" {
   description = "Name of the Application"
-  default = "pfSense01"
+  default = "Server0x"
 }
 
 variable "env" {

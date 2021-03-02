@@ -3,22 +3,19 @@ variable "region" {
   default = "us-east-1"
 }
 
-variable "name" {
-  description = "Name of the Application"
-  default = "pfSense01"
-}
-
-variable "env" {
-  description = "Environment of the Application"
-  default = "prod"
-}
-
-variable "ami" {
-  description = "AWS AMI to be used "
-  default = "ami-0a3cdac353b60aed5"
-}
-
 variable "instance_type" {
   description = "AWS Instance type defines the hardware configuration of the machine"
   default = "t3.micro"
+}
+
+variable "ami" {
+  description = "AWS AMI to be used"
+  default = "ami-0f39554b9402dac80"
+}
+
+variable "vpc_id" {
+  description = "AWS VPC to be used"
+  default = "vpc-040e4eb64e81daca7"
+
+  
 }
