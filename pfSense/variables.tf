@@ -15,7 +15,7 @@ variable "ami" {
 
 variable "vpc_id" {
   description = "AWS VPC to be used"
-  default = "vpc-040e4eb64e81daca7"
+  default = "data.aws_vpc.default.id"
 
   
 }
