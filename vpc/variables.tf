@@ -55,7 +55,6 @@ variable "intra_subnets" {
   ]
 }
 
-
 variable "private_subnets" {
   description = "Private subnets specification"
   type        = list(any)
