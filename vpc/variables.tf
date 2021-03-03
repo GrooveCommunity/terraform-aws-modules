@@ -1,12 +1,12 @@
 variable "region" {
-  description = "Define what region the instance will be deployed"
-  default = "us-east-1"
+  description = "Define what region the instance will be deployed, (us-east-1 ; us-east-2)"
+  
 }
 
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
-  default = "Prod"
+  
 }
 
 variable "cidr" {
