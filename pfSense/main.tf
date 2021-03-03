@@ -440,24 +440,25 @@ resource "aws_network_acl_rule" "intra_outbound" {
   ipv6_cidr_block = lookup(var.intra_outbound_acl_rules[count.index], "ipv6_cidr_block", null)
 }
 
-
-
 #############
-# ec2 pfSense
+# Ec2 pfSense
 #############
+
 resource "aws_instance" "pfSense" {
   count = 1
-  ami           = var.ami
+  ami           = var.instance_ami
   instance_type = var.instance_type
-
+  vpc_id = aws_vpc.default.id
+  vpc_security_group_ids = [aws_security_group.gt_80.id]
+  
   tags = {
-    Name        = "pfSense_${count.index}"
-    Environment = "prod"
-  }
+    "Name"        = "pfSense_${count.index}"
+		"Environment" = var.environment_tag
+	}
 }
 
-resource "aws_security_group" "pt_22" {
-  name = "pt_22"
+resource "aws_security_group" "gt_22" {
+  name = "gt_22"
   vpc_id = var.vpc_id
   ingress {
       from_port   = 22
@@ -476,8 +477,8 @@ resource "aws_security_group" "pt_22" {
   }
 }
 
-resource "aws_security_group" "pt_80" {
-  name = "pt_80"
+resource "aws_security_group" "gt_80" {
+  name = "gt_80"
   vpc_id = var.vpc_id
   ingress {
       from_port   = 80
