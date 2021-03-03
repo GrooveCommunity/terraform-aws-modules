@@ -7,7 +7,7 @@ locals {
 }
 
 provider "aws" {
-   region = var.region
+  region = var.region
 }
 
 ######
@@ -75,7 +75,7 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     {
-      "Name" = "${each.key}-${each.value["zone"]}-public"
+      "Name" = "${each.key}-public"
     },
     var.tags,
   )
@@ -200,7 +200,7 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     {
-      "Name" = "${each.key}-${each.value["zone"]}-private"
+      "Name" = "${each.key}-private"
     },
     var.tags,
   )
@@ -357,7 +357,7 @@ resource "aws_subnet" "intra" {
 
   tags = merge(
     {
-      "Name" = "${each.key}-${each.value["zone"]}-intra"
+      "Name" = "${each.key}-intra"
     },
     var.tags,
   )
