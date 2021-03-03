@@ -1,6 +1,5 @@
 variable "region" {
-  description = "Define what region the instance will be deployed"
-  default = "us-east-1"
+  description = "Define what region the instance will be deployed us-east-1 / sa-east-1"
 }
 
 variable "instance_type" {
@@ -13,20 +12,10 @@ variable "instance_ami" {
   default = "ami-0f39554b9402dac80"
 }
 
-variable "vpc_id" {
-  description = "AWS VPC to be used"
-  default = "data.aws_vpc.default.id"
-}
-
-variable "environment_tag" {
-  description = "Environment tag"
-  default     = "Production"
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
-  default = "Prod"
+  
 }
 
 variable "cidr" {

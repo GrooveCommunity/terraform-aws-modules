@@ -1,14 +1,13 @@
-provider "aws" {
-   region = var.region
-}
-
-
 locals {
 
   public_subnets  = { for public_subnet in var.public_subnets : "${var.name}-${public_subnet.zone}-${public_subnet.name}" => public_subnet }
   private_subnets = { for private_subnet in var.private_subnets : "${var.name}-${private_subnet.zone}-${private_subnet.name}" => private_subnet }
   intra_subnets   = { for intra_subnet in var.intra_subnets : "${var.name}-${intra_subnet.zone}-${intra_subnet.name}" => intra_subnet }
 
+}
+
+provider "aws" {
+   region = var.region
 }
 
 ######
@@ -448,53 +447,8 @@ resource "aws_instance" "pfSense" {
   count = 1
   ami           = var.instance_ami
   instance_type = var.instance_type
-  vpc_id = aws_vpc.default.id
-  vpc_security_group_ids = [aws_security_group.gt_80.id]
   
   tags = {
     "Name"        = "pfSense_${count.index}"
-		"Environment" = var.environment_tag
 	}
 }
-
-resource "aws_security_group" "gt_22" {
-  name = "gt_22"
-  vpc_id = var.vpc_id
-  ingress {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
-
-
-
- egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "gt_80" {
-  name = "gt_80"
-  vpc_id = var.vpc_id
-  ingress {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-  }
-
-
-
- egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-
