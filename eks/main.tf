@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "14.0.0"

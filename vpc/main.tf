@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
 locals {
 
   public_subnets  = { for public_subnet in var.public_subnets : "${var.name}-${public_subnet.zone}-${public_subnet.name}" => public_subnet }
