@@ -38,7 +38,7 @@ locals {
 
 resource "aws_launch_template" "this" {
   for_each               = local.launch_templates
-  name_prefix            = "${var.cluster_name}-${each.value["slug"]}-"
+  name_prefix            = "${var.cluster_name}-${each.value["name"]}-"
   description            = "${each.key} nodes"
   update_default_version = true
 
