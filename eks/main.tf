@@ -32,8 +32,12 @@ data "template_file" "launch_template_userdata" {
   }
 }
 
+locals {
+  launch_templates = { for launch_template in var.launch_templates : launch_template.name => launch_template }
+}
+
 resource "aws_launch_template" "this" {
-  for_each               = var.launch_templates
+  for_each               = local.launch_templates
   name_prefix            = "${var.cluster_name}-${each.value["slug"]}-"
   description            = "${each.key} nodes"
   update_default_version = true

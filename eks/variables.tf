@@ -21,7 +21,7 @@ variable "tags" {
 
 variable "launch_templates" {
   description = "Launch templates where node_group is the var specification for "
-  type        = any
+  type        = list(any)
   default = [
 
     {
