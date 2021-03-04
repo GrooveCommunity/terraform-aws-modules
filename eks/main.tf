@@ -11,6 +11,7 @@ module "eks" {
   node_groups = { for launch_template in var.launch_templates : launch_template.name =>
     merge(launch_template, {
       node_group : merge(launch_template.node_group, {
+        subnets                 = lookup(launch_template.node_group, "subnets", var.subnets)
         launch_template_id      = aws_launch_template.this[launch_template.name].id
         launch_template_version = aws_launch_template.this[launch_template.name].default_version
       }),
