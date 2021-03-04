@@ -1,6 +1,6 @@
 output "vpc_id" {
   description = "VPC ID."
-  value       = aws_vpc.this.id
+  value       = aws_vpc.groove.id
 }
 
 output "public_subnet_ids" {

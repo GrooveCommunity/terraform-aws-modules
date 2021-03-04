@@ -13,7 +13,7 @@ provider "aws" {
 ######
 # VPC
 ######
-resource "aws_vpc" "this" {
+resource "aws_vpc" "groove" {
   cidr_block       = var.cidr
   instance_tenancy = var.instance_tenancy
 
@@ -34,9 +34,9 @@ resource "aws_vpc" "this" {
 #######################
 # Default Network ACLs
 #######################
-resource "aws_default_network_acl" "this" {
+resource "aws_default_network_acl" "groove" {
 
-  default_network_acl_id = aws_vpc.this.default_network_acl_id
+  default_network_acl_id = aws_vpc.groove.default_network_acl_id
 
   subnet_ids = setsubtract(
     compact(flatten([
@@ -66,7 +66,7 @@ resource "aws_default_network_acl" "this" {
 resource "aws_subnet" "public" {
   for_each = local.public_subnets
 
-  vpc_id                          = aws_vpc.this.id
+  vpc_id                          = aws_vpc.groove.id
   cidr_block                      = each.value["cidr"]
   availability_zone               = each.value["zone"]
   map_public_ip_on_launch         = false
@@ -88,10 +88,10 @@ locals {
 ###################
 # Internet Gateway
 ###################
-resource "aws_internet_gateway" "this" {
+resource "aws_internet_gateway" "groove" {
   count = length(var.public_subnets) > 0 ? 1 : 0
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.groove.id
 
   tags = merge(
     {
@@ -107,7 +107,7 @@ resource "aws_internet_gateway" "this" {
 resource "aws_route_table" "public" {
   count = length(var.public_subnets) > 0 ? 1 : 0
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.groove.id
 
   tags = merge(
     {
@@ -122,7 +122,7 @@ resource "aws_route" "public_internet_gateway" {
 
   route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.this[0].id
+  gateway_id             = aws_internet_gateway.groove[0].id
 
   timeouts {
     create = "5m"
@@ -140,7 +140,7 @@ resource "aws_route_table_association" "public" {
 # Public Network ACLs
 ########################
 resource "aws_network_acl" "public" {
-  vpc_id     = aws_vpc.this.id
+  vpc_id     = aws_vpc.groove.id
   subnet_ids = local.public_subnet_ids
 
   tags = merge(
@@ -191,7 +191,7 @@ resource "aws_network_acl_rule" "public_outbound" {
 resource "aws_subnet" "private" {
   for_each = local.private_subnets
 
-  vpc_id                          = aws_vpc.this.id
+  vpc_id                          = aws_vpc.groove.id
   cidr_block                      = each.value["cidr"]
   availability_zone               = each.value["zone"]
   map_public_ip_on_launch         = false
@@ -227,7 +227,7 @@ locals {
 resource "aws_route_table" "private" {
   for_each = local.nat_gateway_zones
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.groove.id
 
   tags = merge(
     {
@@ -249,7 +249,7 @@ resource "aws_route" "private_nat_gateway" {
 
   route_table_id         = aws_route_table.private[each.value["zone"]].id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.this[each.key].id
+  nat_gateway_id         = aws_nat_gateway.groove[each.key].id
 
   timeouts {
     create = "5m"
@@ -274,7 +274,7 @@ resource "aws_eip" "nat" {
   )
 }
 
-resource "aws_nat_gateway" "this" {
+resource "aws_nat_gateway" "groove" {
   for_each = local.nat_gateway_zones
 
   allocation_id = lookup(each.value, "eip_id", lookup(lookup(aws_eip.nat, each.key, {}), "id", null))
@@ -288,7 +288,7 @@ resource "aws_nat_gateway" "this" {
   )
 
   depends_on = [
-    aws_internet_gateway.this,
+    aws_internet_gateway.groove,
     aws_eip.nat,
   ]
 }
@@ -297,7 +297,7 @@ resource "aws_nat_gateway" "this" {
 # Private Network ACLs
 ########################
 resource "aws_network_acl" "private" {
-  vpc_id     = aws_vpc.this.id
+  vpc_id     = aws_vpc.groove.id
   subnet_ids = local.private_subnet_ids
 
   tags = merge(
@@ -348,7 +348,7 @@ resource "aws_network_acl_rule" "private_outbound" {
 resource "aws_subnet" "intra" {
   for_each = local.intra_subnets
 
-  vpc_id                          = aws_vpc.this.id
+  vpc_id                          = aws_vpc.groove.id
   cidr_block                      = each.value["cidr"]
   availability_zone               = each.value["zone"]
   map_public_ip_on_launch         = false
@@ -373,7 +373,7 @@ locals {
 resource "aws_route_table" "intra" {
   count = length(var.intra_subnets) > 0 ? 1 : 0
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.groove.id
 
   tags = merge(
     {
@@ -394,7 +394,7 @@ resource "aws_route_table_association" "intra" {
 # Intra Network ACLs
 ########################
 resource "aws_network_acl" "intra" {
-  vpc_id     = aws_vpc.this.id
+  vpc_id     = aws_vpc.groove.id
   subnet_ids = local.intra_subnet_ids
 
   tags = merge(
@@ -447,7 +447,7 @@ resource "aws_instance" "pfSense" {
   count = 1
   ami           = var.instance_ami
   instance_type = var.instance_type
-  vpc_security_group_ids = ["${aws_security_group.pfsense.id}"]
+  vpc_security_group_ids = ["pfsense_80","pfsense_22"]
 
   tags = {
     "Name"        = "pfSense_${count.index}"
