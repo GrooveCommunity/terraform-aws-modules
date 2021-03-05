@@ -64,25 +64,25 @@ resource "aws_default_network_acl" "groove" {
 # Public subnet
 ################
 resource "aws_subnet" "public" {
-  for_each = local.public_subnets
+  for_each                        = local.public_subnets
 
   vpc_id                          = aws_vpc.groove.id
   cidr_block                      = each.value["cidr"]
   availability_zone               = each.value["zone"]
-  map_public_ip_on_launch         = false
+  map_public_ip_on_launch         = true
   assign_ipv6_address_on_creation = false
   ipv6_cidr_block                 = null
 
-  tags = merge(
+  tags                            = merge(
     {
-      "Name" = "${each.key}-${each.value["zone"]}-public"
+      "Name"                      = "${each.key}-${each.value["zone"]}-public"
     },
     var.tags,
   )
 }
 
 locals {
-  public_subnet_ids = [for subnet in aws_subnet.public : subnet.id]
+  public_subnet_ids               = [for subnet in aws_subnet.public : subnet.id]
 }
 
 ###################
@@ -198,16 +198,16 @@ resource "aws_subnet" "private" {
   assign_ipv6_address_on_creation = false
   ipv6_cidr_block                 = null
 
-  tags = merge(
+  tags                            = merge(
     {
-      "Name" = "${each.key}-${each.value["zone"]}-private"
+      "Name"                      = "${each.key}-${each.value["zone"]}-private"
     },
     var.tags,
   )
 }
 
 locals {
-  private_subnet_ids = [for subnet in aws_subnet.private : subnet.id]
+  private_subnet_ids              = [for subnet in aws_subnet.private : subnet.id]
 }
 
 #################
@@ -444,12 +444,17 @@ resource "aws_network_acl_rule" "intra_outbound" {
 #############
 
 resource "aws_instance" "pfSense" {
-  count = 1
-  ami           = var.instance_ami
-  instance_type = var.instance_type
-  vpc_security_group_ids = ["pfsense_80","pfsense_22"]
-
+  for_each               = local.public_subnets
+  ami                    = var.instance_ami
+  instance_type          = var.instance_type
+  subnet_id              = aws_subnet.public[each.key].id
+  vpc_security_group_ids = [aws_security_group.pfsense_80.id,aws_security_group.pfsense_22.id]
+  
+  root_block_device      {
+  delete_on_termination  = true
+  volume_size            = 30
+}
   tags = {
-    "Name"        = "pfSense_${count.index}"
-	}
+    "Name"        = "pfSense"
+    }
 }
