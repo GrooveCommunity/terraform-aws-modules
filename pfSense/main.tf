@@ -450,6 +450,8 @@ resource "aws_instance" "pfSense" {
   subnet_id              = aws_subnet.public[each.key].id
   vpc_security_group_ids = [aws_security_group.pfsense_80.id,aws_security_group.pfsense_22.id]
   
+  #Não esquecer de remover estes grupos das instancias do pfsense, após a configuração.
+  
   root_block_device      {
   delete_on_termination  = true
   volume_size            = 30
