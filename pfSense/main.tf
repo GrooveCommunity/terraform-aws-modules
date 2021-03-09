@@ -455,7 +455,7 @@ resource "aws_instance" "pfSense" {
   }
     provisioner "local-exec" {
     interpreter = ["/bin/bash", "-c"]
-    command = rm /tmp/config.cache && rm /tmp/config.cache
+    command = rm /tmp/config.cache && /etc/rc.reload_all start
     
   }
 
