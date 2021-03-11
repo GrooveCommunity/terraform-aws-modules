@@ -449,15 +449,7 @@ resource "aws_instance" "pfSense" {
   instance_type          = var.instance_type
   subnet_id              = aws_subnet.public[each.key].id
   vpc_security_group_ids = [aws_security_group.pfsense_80.id,aws_security_group.pfsense_22.id]
-  provisioner "file" {
-    source      = "conf/config-pfSense-inicial.xml" #colocar a localizadade e o nome do arquivo de configuração do pfsense
-    destination = "/cf/conf/config.xml" #colocar o destino do arquivo de configuração do pfsense
-  }
-    provisioner "local-exec" {
-    interpreter = ["/bin/bash", "-c"]
-    command = rm /tmp/config.cache && /etc/rc.reload_all start
-    
-  }
+  
 
   #Não esquecer de remover estes grupos das instancias do pfsense, após a configuração.
   
