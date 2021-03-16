@@ -40,7 +40,6 @@ output "intra_subnets" {
 }
 
 output "vpc_cidr_block" {
-  description = "VPC Cidr Block"
-  value = aws_vpc.this.vpc_cidr_block
-
+  description = "The CIDR block of the VPC"
+  value       = concat(aws_vpc.this.*.cidr_block, [""])[0]
 }
