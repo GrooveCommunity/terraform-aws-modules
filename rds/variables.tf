@@ -15,12 +15,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "private_subnets" {
-  description = "Private subnets specification"
-  type        = list(any)
-  default = []
-}
-
 variable "vpc_id" {
   description = "The VPC ID"
   type = string
