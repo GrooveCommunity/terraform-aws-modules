@@ -89,8 +89,8 @@ variable "db_multi_az" {
 
 variable "db_subnets" {
   description = "Subnets to put database on"
-  type = string
-  default = ""
+  type = list(string)
+  default = []
 }
 
 variable "db_backup_retention_period" {
