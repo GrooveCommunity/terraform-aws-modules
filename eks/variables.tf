@@ -27,6 +27,8 @@ variable "launch_templates" {
     {
       name          = "elasticsearch-data"
       instance_type = "t3.micro"
+      # https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html
+      ami_id = ""
       node_group = {
         desired_capacity = 1
         max_capacity     = 3
@@ -41,6 +43,7 @@ variable "launch_templates" {
     {
       name          = "elasticsearch-master"
       instance_type = "t3.micro"
+      ami_id        = ""
       node_group = {
         desired_capacity = 1
         max_capacity     = 3
@@ -55,6 +58,7 @@ variable "launch_templates" {
     {
       name          = "kibana-elastalert"
       instance_type = "t3.micro"
+      ami_id        = ""
       node_group = {
         desired_capacity = 1
         max_capacity     = 3
