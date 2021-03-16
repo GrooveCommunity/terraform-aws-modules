@@ -14,7 +14,7 @@ provider "kubernetes" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "14.0.0"
+  version = "13.2.1" # Version 14.0.0 is Broken for Launch Template instance_type flag. https://github.com/terraform-aws-modules/terraform-aws-eks/pull/1221
 
   cluster_name    = var.cluster_name
   cluster_version = "1.18"
