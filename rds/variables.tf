@@ -99,7 +99,7 @@ variable "db_subnets" {
   default = ""
 }
 
-varvariable "db_backup_retention_period" {
+variable "db_backup_retention_period" {
   description = "Backup retention value"
   type = number
   default = 0
