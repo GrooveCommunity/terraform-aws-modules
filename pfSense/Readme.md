@@ -41,3 +41,16 @@ Siga os passos abaixo para inicio das configurações da OpenVpn no Pfsense
 Siga os passos abaixo para criação de usuarios
 
 ![](./resources/gifs/Criando_usuario_no_pfsense_para_acesso_openvpn.gif)
+
+### Exportando Arquivo de Configuração
+Após criação do usuario é necessario exportar os aqruivos para conexão da VPN
+
+![](./resources/gifs/Exp _arquivos_config_de_instalação_do_openvpn_para_os_usuarios.gif)
+
+### Rebootando o PfSense
+È necessario o primeiro reboot após as configurações para observação da reestruturação correta do ambiente
+
+![](./resources/gifs/Exp Rebootando_pfsense.gif)
+
+
+
