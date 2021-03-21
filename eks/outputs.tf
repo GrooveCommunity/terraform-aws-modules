@@ -39,3 +39,8 @@ output "kubeconfig_filename" {
   description = "The filename of the generated kubectl config."
   value       = module.eks.kubeconfig_filename
 }
+
+output "kubeconfig_filepath" {
+  description = "The file path (directory + filename) of the generated kubectl config."
+  value       = local_file.kubeconfig.filename
+}

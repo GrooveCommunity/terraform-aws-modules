@@ -133,3 +133,8 @@ resource "aws_launch_template" "this" {
     create_before_destroy = true
   }
 }
+
+resource "local_file" "kubeconfig" {
+  sensitive_content = module.eks.kubeconfig
+  filename          = "${path.cwd}/${module.eks.kubeconfig_filename}"
+}
