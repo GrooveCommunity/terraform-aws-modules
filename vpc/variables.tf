@@ -21,6 +21,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "public_tags" {
+  description = "Public subnet specific tags"
+  type        = any
+  default     = {}
+}
+
 variable "public_subnets" {
   description = "Public subnets specification"
   type        = list(any)

@@ -23,7 +23,7 @@ resource "aws_vpc" "this" {
     {
       "Name" = var.name
     },
-    var.tags,
+    var.tags
   )
 }
 
@@ -74,6 +74,7 @@ resource "aws_subnet" "public" {
       "Name" = "${each.key}-public"
     },
     var.tags,
+    var.public_tags,
   )
 }
 
