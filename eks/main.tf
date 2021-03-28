@@ -14,6 +14,16 @@
 #   token                  = data.aws_eks_cluster_auth.cluster.token
 # }
 
+locals {
+  node_groups = { for launch_template in var.launch_templates : launch_template.name =>
+    merge(launch_template.node_group, {
+      subnets                 = lookup(launch_template.node_group, "subnets", var.subnets)
+      launch_template_id      = aws_launch_template.this[launch_template.name].id
+      launch_template_version = aws_launch_template.this[launch_template.name].default_version
+    })
+  }
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "13.2.1" # Version 14.0.0 is Broken for Launch Template instance_type flag. https://github.com/terraform-aws-modules/terraform-aws-eks/pull/1221
@@ -24,11 +34,9 @@ module "eks" {
   subnets         = var.subnets
   tags            = var.tags
 
-  node_groups = { for launch_template in var.launch_templates : launch_template.name =>
-    merge(launch_template.node_group, {
-      subnets                 = lookup(launch_template.node_group, "subnets", var.subnets)
-      launch_template_id      = aws_launch_template.this[launch_template.name].id
-      launch_template_version = aws_launch_template.this[launch_template.name].default_version
+  node_groups = { for k, v in local.node_groups : k =>
+    merge(v, {
+      name = trim(substr(join("-", [var.cluster_name, k, random_pet.node_groups[k].id]), 0, 63), "-")
     })
   }
 
