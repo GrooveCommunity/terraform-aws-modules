@@ -19,6 +19,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "workers_additional_policies" {
+  description = "IAM Policies to be added to the workers"
+  type        = list(string)
+  default     = ["ecr-full-perm"]
+}
+
 variable "launch_templates" {
   description = "Launch templates where node_group is the var specification for "
   type        = list(any)

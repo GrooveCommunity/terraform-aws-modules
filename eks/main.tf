@@ -16,11 +16,13 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "13.2.1" # Version 14.0.0 is Broken for Launch Template instance_type flag. https://github.com/terraform-aws-modules/terraform-aws-eks/pull/1221
 
-  cluster_name    = var.cluster_name
-  cluster_version = "1.18"
-  vpc_id          = var.vpc_id
-  subnets         = var.subnets
-  tags            = var.tags
+  cluster_name    	      = var.cluster_name
+  cluster_version 	      = "1.18"
+  vpc_id          	      = var.vpc_id
+  subnets         	      = var.subnets
+  tags            	      = var.tags
+  workers_additional_policies = var.workers_additional_policies
+  
 
   node_groups = { for launch_template in var.launch_templates : launch_template.name =>
     merge(launch_template.node_group, {
