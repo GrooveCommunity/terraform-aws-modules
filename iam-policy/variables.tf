@@ -1,19 +1,19 @@
 variable "policy_name" {
   description = "Policy name to be created"
   type        = string
-  default     = ""
+  default     = "groove-policy"
 }
 
 variable "policy_path" {
   description = "Policy path where the policy will be created"
   type        = string
-  default     = ""
+  default     = "/"
 }
 
 variable "policy_description" {
   description = "Policy description"
   type        = string
-  default     = ""
+  default     = "the best policy"
 }
 
 variable "policy_json_body" {
