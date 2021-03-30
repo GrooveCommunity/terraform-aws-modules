@@ -1,29 +1,17 @@
-variable "ecr_iam_role" {
-  description = "IAM Role for ECr"
+variable "image_tag_mutability" {
+  description = "If tags can be multable"
   type = string
-  default = ""
+  default = "MULTABLE"
 }
 
-variable "environment" {
-  description = "Environment to use as stage"
-  type = string
-  default = ""
+variable "image_scan_on_push" {
+  description = "Namespace to append to image repo. e.g: groove/nginx"
+  type = boolean
+  default = true
 }
 
 variable "repository_name" {
-  description = "repository name"
+  description = "Repository name that will be created"
   type = string
   default = ""
-}
-
-variable "repository_namespace" {
-  description = "Namespace to append to image repo. e.g: groove/nginx"
-  type = string
-  default = ""
-}
-
-variable "image_names" {
-  description = "List of repositories to be created"
-  type = list(string)
-  default = []
 }
