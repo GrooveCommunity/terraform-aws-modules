@@ -38,3 +38,8 @@ output "intra_subnets" {
     id = aws_subnet.intra[key].id
   })]
 }
+
+output "vpc_cidr_block" {
+  description = "The CIDR block of the VPC"
+  value       = concat(aws_vpc.this.*.cidr_block, [""])[0]
+}

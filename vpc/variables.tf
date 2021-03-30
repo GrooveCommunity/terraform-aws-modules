@@ -1,12 +1,6 @@
-variable "region" {
-  description = "Define what region the instance will be deployed, (us-east-1 ; us-east-2)"
-  
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
-  
 }
 
 variable "cidr" {
@@ -23,6 +17,12 @@ variable "instance_tenancy" {
 
 variable "tags" {
   description = "Additional tags for the VPC"
+  type        = any
+  default     = {}
+}
+
+variable "public_tags" {
+  description = "Public subnet specific tags"
   type        = any
   default     = {}
 }
