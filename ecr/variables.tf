@@ -6,7 +6,7 @@ variable "image_tag_mutability" {
 
 variable "image_scan_on_push" {
   description = "Namespace to append to image repo. e.g: groove/nginx"
-  type = boolean
+  type = bool
   default = true
 }
 
