@@ -1,18 +1,28 @@
 # If you need to configure something standard to all clusters use the code below
-#
-# data "aws_eks_cluster" "cluster" {
-#   name = module.eks.cluster_id
-# }
 
-# data "aws_eks_cluster_auth" "cluster" {
-#   name = module.eks.cluster_id
-# }
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
 
-# provider "kubernetes" {
-#   host                   = data.aws_eks_cluster.cluster.endpoint
-#   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-#   token                  = data.aws_eks_cluster_auth.cluster.token
-# }
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_id
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+locals {
+  node_groups = { for launch_template in var.launch_templates : launch_template.name =>
+    merge(launch_template.node_group, {
+      subnets                 = lookup(launch_template.node_group, "subnets", var.subnets)
+      launch_template_id      = aws_launch_template.this[launch_template.name].id
+      launch_template_version = aws_launch_template.this[launch_template.name].default_version
+    })
+  }
+}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -24,11 +34,9 @@ module "eks" {
   subnets         = var.subnets
   tags            = var.tags
 
-  node_groups = { for launch_template in var.launch_templates : launch_template.name =>
-    merge(launch_template.node_group, {
-      subnets                 = lookup(launch_template.node_group, "subnets", var.subnets)
-      launch_template_id      = aws_launch_template.this[launch_template.name].id
-      launch_template_version = aws_launch_template.this[launch_template.name].default_version
+  node_groups = { for k, v in local.node_groups : k =>
+    merge(v, {
+      name = trim(substr(join("-", [var.cluster_name, k, random_pet.node_groups[k].id]), 0, 63), "-")
     })
   }
 
