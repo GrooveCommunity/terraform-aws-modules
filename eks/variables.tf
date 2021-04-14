@@ -79,9 +79,9 @@ variable "launch_templates" {
   ]
 }
 
-variable "workers_group_defaults_defaults" {
+variable "workers_group_defaults" {
   description = "Defaults for worker group"
-  type = map
+  type = any
   default = {
     key_name = "eks-workers"
   }

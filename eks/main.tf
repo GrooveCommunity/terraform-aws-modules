@@ -33,7 +33,7 @@ module "eks" {
   }
 
   map_roles = var.map_roles
-  workers_group_defaults_defaults = var.workers_group_defaults_defaults
+  workers_group_defaults = var.workers_group_defaults
 
 }
 
