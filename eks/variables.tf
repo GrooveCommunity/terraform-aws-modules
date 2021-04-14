@@ -79,6 +79,14 @@ variable "launch_templates" {
   ]
 }
 
+variable "workers_group_defaults_defaults" {
+  description = "Defaults for worker group"
+  type = map
+  default = {
+    key_name = "eks-workers"
+  }
+}
+
 variable "kms_key_arn" {
   description = "KMS key ARN to use if you want to encrypt EKS node root volumes"
   type        = string
