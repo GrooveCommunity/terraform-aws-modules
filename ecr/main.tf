@@ -1,7 +1,3 @@
-data "aws_iam_role" "ecr" {
-  name = "workers"
-}
-
 module "ecr" {
   source = "cloudposse/ecr/aws"
   namespace              = var.namespace
@@ -10,5 +6,5 @@ module "ecr" {
   max_image_count 	 = var.max_image_count
   use_fullname		 = var.use_fullname
   image_names		 = var.image_names
-  principals_full_access = [data.aws_iam_role.ecr.arn]
+  principals_full_access = var.principals_full_access
 }
