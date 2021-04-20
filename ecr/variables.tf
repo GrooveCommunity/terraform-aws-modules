@@ -33,3 +33,9 @@ variable "image_names" {
   type = list(string)
   default = []
 }
+
+variable "principals_full_access" {
+  description = "List of ARN to give permission to interact with the repos"
+  type = list(string)
+  default = []
+}
