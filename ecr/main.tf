@@ -1,8 +1,14 @@
-resource "aws_ecr_repository" "repository"  {
-  name                 = var.repository_name
-  image_tag_mutability = var.image_tag_mutability
+data "aws_iam_role" "ecr" {
+  name = "workers"
+}
 
-  image_scanning_configuration {
-    scan_on_push = var.image_scan_on_push
-  }
+module "ecr" {
+  source = "cloudposse/ecr/aws"
+  namespace              = var.namespace
+  stage                  = var.stage
+  name                   = var.name
+  max_image_count 	 = var.max_image_count
+  use_fullname		 = var.use_fullname
+  image_names		 = var.image_names
+  principals_full_access = [data.aws_iam_role.ecr.arn]
 }

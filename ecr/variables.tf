@@ -1,17 +1,35 @@
-variable "image_tag_mutability" {
-  description = "If tags can be multable"
-  type = string
-  default = "MULTABLE"
-}
-
-variable "image_scan_on_push" {
-  description = "Namespace to append to image repo. e.g: groove/nginx"
-  type = bool
-  default = true
-}
-
-variable "repository_name" {
-  description = "Repository name that will be created"
+variable "namespace" {
+  description = "Namespace of the repositories"
   type = string
   default = ""
+}
+
+variable "stage" {
+  description = "Environment of the repo images e.g staging, prod"
+  type = string
+  default = ""
+}
+
+variable "name" {
+  description = "Name of the context, e.g app"
+  type = string
+  default = ""
+}
+
+variable "max_image_count" {
+  description = "How many Docker Image versions AWS ECR will store"
+  type = number
+  default = 20
+}
+
+variable "use_fullname" {
+  description = "Set 'true' to use `namespace-stage-name` for ecr repository name, else `name`"
+  type = bool
+  default = false
+}
+
+variable "image_names" {
+  description = ""List of Docker local image names, used as repository names for AWS ECR
+  type = list(string)
+  default = []
 }
