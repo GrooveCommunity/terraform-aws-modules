@@ -33,8 +33,6 @@ module "eks" {
   }
 
   map_roles = var.map_roles
-  workers_group_defaults = var.workers_group_defaults
-
 }
 
 data "template_file" "launch_template_userdata" {
