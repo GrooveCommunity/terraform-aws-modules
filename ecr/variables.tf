@@ -29,7 +29,7 @@ variable "use_fullname" {
 }
 
 variable "image_names" {
-  description = ""List of Docker local image names, used as repository names for AWS ECR
+  description = "List of Docker local image names, used as repository names for AWS ECR"
   type = list(string)
   default = []
 }
