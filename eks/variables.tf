@@ -19,6 +19,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "workers_additional_policies" {
+  description = "IAM Policies to be added to the workers"
+  type        = list(string)
+  default     = ["ecr-full-perm"]
+}
+
 variable "launch_templates" {
   description = "Launch templates where node_group is the var specification for "
   type        = list(any)
@@ -79,10 +85,10 @@ variable "kms_key_arn" {
   default     = ""
 }
 
-variable "map_users" {
-  description = "Additional IAM users to add to the aws-auth configmap."
+variable "map_roles" {
+  description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
-    userarn = string
+    rolearn = string
     username = string
     groups = list(string)
   }))
